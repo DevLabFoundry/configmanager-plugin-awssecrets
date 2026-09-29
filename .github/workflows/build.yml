@@ -35,9 +35,6 @@ jobs:
       - name: Set SemVer Version
         uses: gittools/actions/gitversion/execute@v4.7.0
         id: gitversion
-        with:
-          overrideConfig: |
-            next-version=3.0.0
 
       - name: echo VERSIONS
         run: |
