@@ -46,7 +46,7 @@ tasks:
       - |
         mkdir -p .deps
         unset GOTOOLCHAIN
-        ldflags="-s -w -X \"main.Version=${VERSION}\" -X \"main.Revision=${REVISION}\" -extldflags -static"
+        ldflags="-s -w -X \"main.Version={{ .Env.VERSION | default "not-supplied" }}\" -X \"main.Revision={{ .Env.REVISION | default "not-supplied" }}\" -extldflags -static"
         export GOPATH=/eirctl/.deps GOOS=${BUILD_GOOS} GOARCH=${BUILD_GOARCH} CGO_ENABLED=0 
         go build -mod=readonly -buildvcs=false -ldflags="$ldflags" \
         -o dist/$PLUGIN-${BUILD_GOOS}-${BUILD_GOARCH}${BUILD_SUFFIX} main.go
