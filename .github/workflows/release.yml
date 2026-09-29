@@ -1,0 +1,80 @@
+name: release
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches:
+      - main
+  push: 
+    branches: 
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  set-version:
+    name: Set Version
+    runs-on: ubuntu-latest
+    # if: ${{ (github.event.workflow_run.head_branch == 'master' || github.event.workflow_run.head_branch == 'v3') && github.event.workflow_run.conclusion == 'success' }}
+    container:
+      image: mcr.microsoft.com/dotnet/sdk:10.0
+    outputs:
+      semVer: ${{ steps.gitversion.outputs.semVer }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: install deps
+        run: |
+          apt-get update && apt-get install -y jq git
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.email ${{ github.actor }}-ci@gha.org
+          git config user.name ${{ github.actor }}
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.7.0
+        with:
+          versionSpec: "6.x"
+      - name: Set SemVer Version
+        uses: gittools/actions/gitversion/execute@v4.7.0
+        id: gitversion
+        with:
+          overrideConfig: |
+            next-version=3.0.0
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: set-version
+    env:
+      SEMVER: ${{ needs.set-version.outputs.semVer }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Install Eirctl
+        uses: ensono/actions/eirctl-setup@v0.3.1
+
+      - name: Build binary
+        run: |
+          VERSION=${SEMVER} REVISION=$GITHUB_SHA eirctl run pipeline build:bin
+
+      - name: Release binary
+        uses: softprops/action-gh-release@v3.0.3
+        with:
+          tag_name: v${{ needs.set-version.outputs.semVer }}
+          # TODO: add additional info to the release
+          generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./dist/*
+          prerelease: true
+
+      - name: Release library
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.email ${{ github.actor }}-ci@gha.org
+          git config user.name ${{ github.actor }}
+          VERSION=${SEMVER} REVISION=$GITHUB_SHA eirctl run tag
