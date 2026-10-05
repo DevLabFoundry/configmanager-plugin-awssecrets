@@ -1,5 +1,5 @@
-github.com/DevLabFoundry/configmanager/v3 v3.0.0-20260928134328-e7de972c1714 h1:PUlvPdmnbrxWJJqp3LDN3l5xlzWDc/5oizdrNxjj9us=
-github.com/DevLabFoundry/configmanager/v3 v3.0.0-20260928134328-e7de972c1714/go.mod h1:r4k1PXGHfWqCulzmWz576SY8pW0pMq1rNNFboBQ/Dcw=
+github.com/DevLabFoundry/configmanager/v3 v3.0.0 h1:T8Ek56Fx8DIGY9e6t+qFRjUprwFUp5uMf0yAiFSrVxI=
+github.com/DevLabFoundry/configmanager/v3 v3.0.0/go.mod h1:OgjXGAWM3YV0z8S1Zb5FAaymDh8znqcfOZZVYzBipXs=
 github.com/aws/aws-sdk-go-v2 v1.47.1 h1:uOIZnp4PK3ZhKI0dNrJrhTEsLxbpXHTAJlwoS1pvAtw=
 github.com/aws/aws-sdk-go-v2 v1.47.1/go.mod h1:bttEH6JqnUL8LepvDVfdrds/fZ5bCIxzpe3abyUrhDU=
 github.com/aws/aws-sdk-go-v2/config v1.33.6 h1:MBjkSTLczek/UgiK+EYPIoRTqE7gP8vtW3OFbFo7Nug=
